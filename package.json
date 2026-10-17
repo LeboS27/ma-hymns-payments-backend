@@ -1,0 +1,15 @@
+{
+  "name": "ma-hymns-payments-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Small backend that holds the Paynow secret key and proxies EcoCash/OneMoney donation payments for the MA Hymns direct-distribution build. Never bundled into the mobile app.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
