@@ -1,0 +1,19 @@
+name: keep-alive
+
+# Render's free tier spins the service down after ~15 min of inactivity, which
+# makes the FIRST donation after an idle period hang ~50s (cold start). This
+# pings /health every ~10 min to keep the instance warm so donations respond
+# quickly. Best-effort only — GitHub's scheduled runs can be delayed under load.
+# For guaranteed no-sleep, upgrade the Render service to the paid Starter plan.
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: curl -fsS -m 60 https://ma-hymns-payments.onrender.com/health || true
