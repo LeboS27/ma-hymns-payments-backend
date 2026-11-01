@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { randomUUID } from 'node:crypto';
 import { initiateMobileTransaction, pollTransaction, parseResultCallback, paynowConfigured } from '../paynow.js';
-import { DONATION_TIERS, isValidTier } from '../donationTiers.js';
+import { DONATION_TIERS, resolveTier } from '../donationTiers.js';
 import { isValidMsisdn, toMsisdn } from '../phone.js';
 import { putPending, getPollUrl, deletePending } from '../pendingStore.js';
 
@@ -25,9 +25,10 @@ paymentsRouter.post('/initiate', async (req, res) => {
     return res.status(503).json({ error: 'demo', message: 'Payments are not configured on this server yet.' });
   }
 
-  const { phone, tier, method } = req.body ?? {};
+  const { phone, method } = req.body ?? {};
+  const tier = resolveTier(req.body?.tier);
 
-  if (!isValidTier(tier)) {
+  if (!tier) {
     return res.status(400).json({ error: 'Unknown donation tier.' });
   }
   if (typeof phone !== 'string' || !isValidMsisdn(phone)) {

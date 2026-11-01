@@ -15,3 +15,13 @@ export const DONATION_TIERS = {
 export function isValidTier(tierId) {
   return Object.prototype.hasOwnProperty.call(DONATION_TIERS, tierId);
 }
+
+// Already-published app builds identify tiers by store product id (e.g.
+// "com.christthroughhymns.app.donation_starter"); accept that as well as the
+// short key. Returns the short key, or null if it matches no known tier.
+export function resolveTier(input) {
+  if (typeof input !== 'string') return null;
+  if (isValidTier(input)) return input;
+  const match = /^com\.christthroughhymns\.app\.donation_([a-z]+)$/.exec(input);
+  return match && isValidTier(match[1]) ? match[1] : null;
+}
